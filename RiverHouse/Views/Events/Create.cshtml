@@ -1,0 +1,105 @@
+﻿@model RiverHouse.Models.Member
+@{
+    ViewBag.Title = "New Event";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create New Event</h2>
+<form id="newEvent">
+    <div class="form-group">
+        <input id="memberId" name="memberId" type="hidden" class="form-control" value="@Model.Id" />
+    </div>
+    <div class="form-group">
+        <label>Name of this Event</label>
+        <div class="tt-container">
+            <input id="name" name="name" required type="text" class="form-control" value="" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Total Cost</label>
+        <div class="tt-container">
+            $<input id="total" name="total" type="number" class="form-control" value="" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <div class="tt-container">
+            <Textarea id="description" name="description" type="text" class="form-control" value=""></Textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Guest</label>
+        <div class="tt-container">
+            <input id="memberJoined" name="memberJoined" type="text" class="form-control" value="" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-sm-4">
+            <ul id="membersJoined" class="list-group"></ul>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+    <button class="btn btn-primary">Submit</button>
+</form>
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        var vm = {
+            GuestIds: []
+        };
+
+        $(document).ready(function () {
+            var members = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/api/members?query=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+
+            $('#memberJoined').typeahead({
+                minLength: 2,
+                highlight: true
+            }, {
+                name: 'memberJoined',
+                display: 'name',
+                source: members
+            }).on("typeahead:select", function (e, member) {
+                $("#membersJoined").append("<li class='list-group-item'>" + member.name + "</li>");
+                $("#memberJoined").typeahead("val", "");
+                vm.GuestIds.push(member.id);
+            });
+
+            var validator = $("#newEvent").validate({
+                submitHandler: function () {
+                    vm.MemberCreatedId = $("#memberId").val();
+                    vm.Name = $("#name").val();
+                    vm.TotalAmount = $("#total").val();
+                    vm.Description = $("#description").val();
+                    $.ajax({
+                        url: "/api/Events",
+                        method: "POST",
+                        data: vm
+                    }).done(function () {
+                        toastr.success("Successfully created event");
+                        $("#name").val("");
+                        $("#memberJoined").typeahead("val", "");
+                        $("#membersJoined").empty();
+                        $("#total").val("");
+                        $("#description").val("");
+
+                        vm = { GuestIds: [] };
+                        validator.resetForm();
+
+                        }).fail(function () {
+                        toastr.fail("Something happend: Cannot created event! Please conntact Tung");
+                    });
+
+                    return false;
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,41 @@
+﻿@model RiverHouse.ViewModels.MemberFormViewModel
+@{
+    ViewBag.Title = "MemberForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.Member.Name Profile</h2>
+
+@using (Html.BeginForm("Save", "Members"))
+{
+    @Html.ValidationSummary()
+    <div class="form-group">
+        @Html.LabelFor(m => m.Member.Name)
+        @Html.TextBoxFor(m => m.Member.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Member.Name)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Member.MembershipTypeId)
+        @Html.DropDownListFor(m => m.Member.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name")
+            , "Select Membership Type", new { @class = "form-control", @disabled = "disabled"})    
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Member.BirthDate)
+        @Html.TextBoxFor(m => m.Member.BirthDate, "{0:MM/dd/yyyy}", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Member.BirthDate)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Member.PhoneNumber)
+        @Html.TextBoxFor(m => m.Member.PhoneNumber, new {@id = "phone-number", @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Member.PhoneNumber)
+    </div>
+    @Html.HiddenFor(m => m.Member.Id)
+    @Html.HiddenFor(m => m.Member.MembershipTypeId)
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-primary">Save</button>
+ }
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")     
+}
