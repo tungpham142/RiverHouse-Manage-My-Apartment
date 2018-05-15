@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -31,10 +32,10 @@ namespace RiverHouse.Controllers.Api
             return Ok(events);
         }
 
-        public IHttpActionResult GetEvents(int id)
+        public IHttpActionResult GetEvet(int id)
         {
-            var events = _context.Events.Where(e => e.MemberCreated.Id == id).ToList();
-            return Ok(events);
+            var eEvent = _context.Events.Single(e => e.Id == id);
+            return Ok(eEvent);
         }
 
         [HttpPost]
@@ -47,14 +48,16 @@ namespace RiverHouse.Controllers.Api
             var addedEvent = new Event
             {
                 Name = newEvent.Name,
-                MemberCreated = memberCreated,
-                Guest = guests,
+                MemberCreatedId= memberCreated.Id,
+                GuestId = newEvent.GuestIds,
                 DateCreated = newEvent.DateCreated ?? DateTime.Today,
                 Description = newEvent.Description,
                 TotalAmount = newEvent.TotalAmount,
-                GuestCount = guestCount
+                GuestCount = guestCount,
+                TotalRemain = Math.Round((newEvent.TotalAmount / (guestCount + 1)), 2) * guestCount
             };
             _context.Events.Add(addedEvent);
+            _context.SaveChanges();
 
             if (newEvent.TotalAmount > 0 && guestCount > 0)
             {
@@ -62,10 +65,12 @@ namespace RiverHouse.Controllers.Api
                 {
                     var bill = new Bill
                     {
-                        Name = "Payment for " + newEvent.Name,
+                        EventId = addedEvent.Id,
+                        Name = newEvent.Name,
                         PaidFor = memberCreated.Name,
+                        PaidBy = guest.Name,
                         DateCreated = newEvent.DateCreated ?? DateTime.Now,
-                        Amount = newEvent.TotalAmount / (guestCount + 1),
+                        Amount = Math.Round((newEvent.TotalAmount / (guestCount + 1)), 2),
                         MemberId = guest.Id
                     };
                     _context.Bills.Add(bill);
@@ -97,7 +102,12 @@ namespace RiverHouse.Controllers.Api
             {
                 return NotFound();
             }
-
+            
+            var billInDb = _context.Bills.Where(b => b.EventId == eventInDb.Id).ToList();
+            foreach (var bill in billInDb)
+            {
+                _context.Bills.Remove(bill);
+            }
             _context.Events.Remove(eventInDb);
             _context.SaveChanges();
             return Ok();

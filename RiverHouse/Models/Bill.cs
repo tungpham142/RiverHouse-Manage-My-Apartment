@@ -12,10 +12,13 @@ namespace RiverHouse.Models
         public string Name { get; set; }
 
         public string PaidFor { get; set; }
+        public string PaidBy { get; set; }
 
         public DateTime DateCreated { get; set; }
 
         public double Amount { get; set; }
+
+        public int EventId { get; set; }
 
         public int MemberId { get; set; }
 

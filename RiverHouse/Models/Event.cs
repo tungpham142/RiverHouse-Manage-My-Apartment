@@ -15,11 +15,17 @@ namespace RiverHouse.Models
 
         public double TotalAmount { get; set; }
 
+        public double TotalRemain { get; set; }
+
         public int GuestCount { get; set; }
 
         public Member MemberCreated { get; set; }
 
+        public int MemberCreatedId { get; set; }
+
         public List<Member> Guest { get; set; }
+
+        public List<int> GuestId { get; set; }
 
         public DateTime? DateCreated { get; set; }
 

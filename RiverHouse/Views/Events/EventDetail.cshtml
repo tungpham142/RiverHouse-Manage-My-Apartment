@@ -1,0 +1,30 @@
+﻿@model RiverHouse.ViewModels.EventDetailViewModel
+
+@{
+    ViewBag.Title = "Event Detail";
+}
+<h2>@Model.Event.Name</h2>
+<h3>@(Model.Event.DateCreated?.ToShortDateString())</h3>       
+<h4>@Model.Event.Description</h4>      
+<h4>Total: @Model.Event.TotalAmount$</h4>   
+<h4>Payfor: @Model.Member.Name</h4>
+
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th>Guest</th>
+        <th>Total</th>   
+        <th>Payment</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var bill in @Model.Bills)
+    {
+        <tr>
+            <td>@bill.PaidBy</td>
+            <td>$@bill.Amount</td>
+            <td>@(bill.IsPaid == true ? "Paid" : "Waiting for payment ...")</td>
+        </tr>
+    }
+    </tbody>
+</table>

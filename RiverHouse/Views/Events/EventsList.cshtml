@@ -32,11 +32,15 @@
                     {
                         data: "name",
                         render: function (data, type, member) {
-                            return "<a href='/events/edit/" + member.id + "'>" + member.name + "</a>";
+                            return "<a href='/events/detail/" + member.id + "'>" + member.name + "</a>";
                         }
                     },
                     {
-                        data: "dateCreated"
+                        data: "dateCreated",
+                        render: function(data) {
+                            var m = data.split(/[T-]/);
+                            return m[1] + "/" + m[2] + "/" + m[0];
+                        }
                     },
                     {
                         data: "guestCount"

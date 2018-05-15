@@ -37,7 +37,15 @@ namespace RiverHouse.Controllers
             var currentUser = userManager.FindById(User.Identity.GetUserId());
 
             var member = _context.Members.SingleOrDefault(m => m.Id == currentUser.MemberId);
-            return View("MemberPage", member);
+            var bills = _context.Bills.Where(b => b.MemberId == member.Id).ToList();
+            var events = _context.Events.Where(e => e.MemberCreatedId == member.Id).ToList();
+            var viewModel = new MemberPageViewModel
+            {
+                 Member = member,
+                 Events = events,
+                 Bills = bills
+            };
+            return View("MemberPage", viewModel);
         }
 
         [HttpPost]

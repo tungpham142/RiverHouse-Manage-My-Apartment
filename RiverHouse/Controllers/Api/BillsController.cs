@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -22,6 +23,21 @@ namespace RiverHouse.Controllers.Api
         protected override void Dispose(bool disposing)
         {
             _context.Dispose();
+        }
+
+        public IHttpActionResult GetBills(int id)
+        {
+            var bills = _context.Bills.Where(b => b.EventId == id).ToList();
+            return Ok(bills);
+        }
+
+        [HttpPut]
+        public IHttpActionResult EditBills(int id)
+        {
+            var bill = _context.Bills.Single(b => b.Id == id);
+            bill.IsPaid = !bill.IsPaid;
+            _context.SaveChanges();
+            return Ok(bill);
         }
 
         //[HttpPost]

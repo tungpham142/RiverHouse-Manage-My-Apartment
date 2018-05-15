@@ -144,3 +144,7 @@ D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.AddCreatedEvent
 D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.FixPayMentClass.resources
 D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.TemporaryRemovePayMent.resources
 D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.AddBillForEachPayment.resources
+D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.AddEventIdToBill.resources
+D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.FixMemberIdStoreInEvent.resources
+D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.AddNameOfPersonWhoPaidTheBill.resources
+D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.AddTotalRemainToEvent.resources

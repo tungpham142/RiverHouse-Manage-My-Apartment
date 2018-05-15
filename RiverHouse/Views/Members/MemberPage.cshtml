@@ -1,29 +1,74 @@
-﻿@model RiverHouse.Models.Member
+﻿@model RiverHouse.ViewModels.MemberPageViewModel
 @{
     ViewBag.Title = "Member Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@Model.Name</h2>
-<table id="members" class="table table-bordered table-hover">
-    <thead>
+@{
+    var totalPayment = 0.0;
+    var totalCollect = 0.0;
+    foreach (var bill in @Model.Bills)
+    {
+        totalPayment += bill.Amount;
+    }
+    foreach (var party in @Model.Events)
+    {
+        totalCollect += party.TotalRemain;
+    }
+}
+<h2>@Model.Member.Name</h2>
+<h4>Payment Remaining: $@totalPayment</h4>  
+@if (totalPayment > 0)
+{
+    <table class="table table-bordered table-hover">
+        <thead>
         <tr>
-            <th>My Event</th>    
+            <th>Pay For</th>  
+            <th>Payment Of</th>    
+            <th>Date</th>
+            <th>Total</th>   
+            <th>Payment Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var bill in @Model.Bills)
+        {
+            <tr>
+                <td>@bill.PaidFor</td>  
+                <td>@bill.Name</td>   
+                <td>@bill.DateCreated.ToShortDateString()</td>
+                <td>$@bill.Amount</td>
+                <td>@(bill.IsPaid == true ? "Paid" : "Waiting for payment ...")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@if (totalCollect > 0)
+{   
+    <h4>You still need to collect $@totalCollect from:</h4>
+    <table id="members" class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Payment</th>
             <th>Created On</th>
-            <th>Total Guest</th>
-            <th>Total Amount</th>  
+            <th>Members</th>
+            <th>Total</th>
             <th></th>
         </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+} 
 @section scripts
 {
-    <script>
+    <script>      
         $(document).ready(function () {
             var table = $("#members").DataTable({
                 ajax: {
-                    url: "/api/events/" + @Model.Id,
+                    url: "/api/events/",
                     dataSrc: ""
                 },
                 columns: [
@@ -34,7 +79,11 @@
                         }
                     },
                     {
-                        data: "dateCreated"
+                        data: "dateCreated",
+                        render: function (data) {
+                            var m = data.split(/[T-]/);
+                            return m[1] + "/" + m[2] + "/" + m[0];
+                        }
                     },
                     {
                         data: "guestCount"
@@ -48,7 +97,8 @@
                             return "<button class='btn-link js-event' data-event-id='" + data + "'>Delete</button>";
                         }
                     }
-                ]
+                ],
+                searching: false, paging: false
             });
 
             $("#members").on("click", ".js-event",
