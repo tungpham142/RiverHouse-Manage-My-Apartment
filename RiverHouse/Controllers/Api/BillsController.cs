@@ -39,7 +39,6 @@ namespace RiverHouse.Controllers.Api
             _context.SaveChanges();
             return Ok(bill);
         }
-
         //[HttpPost]
         ////public IHttpActionResult CreatePayments(PaymentDto paymentDto)
         //{

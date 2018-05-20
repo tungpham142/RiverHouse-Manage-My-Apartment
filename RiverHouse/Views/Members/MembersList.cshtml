@@ -7,7 +7,8 @@
 <table id="members" class="table table-bordered table-hover">
     <thead>
     <tr>
-        <th>Member</th>
+        <th>Member</th>    
+        <th>Phone Number</th>
         <th>Membership Type</th>
         <th>Delete</th>
     </tr>
@@ -29,6 +30,16 @@
                         data: "name",
                         render: function(data, type, member) {
                             return "<a href='/members/edit/" + member.id + "'>" + member.name + "</a>";
+                        }
+                    },
+                    {
+                        data: "phoneNumber",
+                        render: function(data) {
+                            if (data != null) {
+                                return data;
+                            } else {
+                                return "<i><small>This user have not updated a phone number</small></i>";
+                            }
                         }
                     },
                     {

@@ -1,119 +1,56 @@
-﻿@using RiverHouse.Migrations
-@model RiverHouse.Models.Event
+﻿@model RiverHouse.ViewModels.EventDetailViewModel
 
 @{
-    ViewBag.Title = "Event Details";
+    ViewBag.Title = "Event Detail";
 }
+<h2>@Model.Event.Name</h2>
+<h3>@(Model.Event.DateCreated?.ToShortDateString())</h3>
+<h4>@Model.Event.Description</h4>
+<h4>Total: @Model.Event.TotalAmount$</h4>
+<h4>Payfor: @Model.Member.Name</h4>
 
-<h2>Event Details:</h2>
-<form id="newEvent">
-    <div class="form-group">
-        <input id="eventId" name="eventId" type="hidden" class="form-control" value="@Model.Id" />
-    </div>
-    <div class="form-group">
-        <label>Name of this Event</label>
-        <div class="tt-container">
-            <input id="name" name="name" required type="text" class="form-control" value="@Model.Name" />
-        </div>
-    </div>
-    <div class="form-group">
-        <label>Total Cost</label>
-        <div class="tt-container">
-            <input id="total" name="total" type="number" class="form-control" value="@Model.TotalAmount" />
-        </div>
-    </div>
-    <div class="form-group">
-        <label>Created On</label>
-        <div class="tt-container">
-            <input id="dateCreated" name="dateCreated" type="datetime" class="form-control" value="@Model.DateCreated" />
-        </div>
-    </div>
-    <div class="form-group">
-        <label>Description</label>
-        <div class="tt-container">
-            <Textarea id="description" name="description" type="text" class="form-control" value="@Model.Description"></Textarea>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 col-sm-4">      
-            <label>Guest</label>
-            <ul id="membersJoined" class="list-group">
-                @foreach (var guest in @Model.Guest)
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Guest</th>
+            <th>Total</th>
+            <th>Payment</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var bill in @Model.Bills)
+        {
+            <tr>
+                <td>@bill.PaidBy</td>
+                <td>$@bill.Amount</td>      
+                @if (bill.IsPaid == true)
                 {
-                    <li class='list-group-item'>@guest.Name</li>
+                    <td> @Html.ActionLink("Paid", "Delete", "Bills",
+                             new {id = bill.Id},
+                             new { @onclick = "return Submit();" })</td>
                 }
-            </ul>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="tt-container">
-            <input id="memberJoined" name="memberJoined" type="text" class="form-control" value="" />
-        </div>
-    </div>
-    @Html.AntiForgeryToken()
-    <button class="btn btn-primary">Submit</button>
-</form>
+                else
+                {
+                    <td> @Html.ActionLink("Waiting For Payment", "Delete", "Bills",
+                             new {id = bill.Id},
+                             new { @onclick = "return Submit();" })</td>
+                }
+
+            </tr>
+        }
+    </tbody>
+</table>    
 @section scripts
 {
-    @Scripts.Render("~/bundles/jqueryval")
-    <script>
-        var vm = {
-            GuestIds: []
-        };
-
-        $(document).ready(function() {
-            var members = new Bloodhound({
-                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-                queryTokenizer: Bloodhound.tokenizers.whitespace,
-                remote: {
-                    url: '/api/members?query=%QUERY',
-                    wildcard: '%QUERY'
-                }
-            });
-
-            $('#memberJoined').typeahead({
-                    minLength: 2,
-                    highlight: true
-                },
-                {
-                    name: 'memberJoined',
-                    display: 'name',
-                    source: members
-                }).on("typeahead:select",
-                function(e, member) {
-                    $("#membersJoined").append("<li class='list-group-item'>" + member.name + "</li>");
-                    $("#memberJoined").typeahead("val", "");
-                    vm.GuestIds.push(member.id);
-                });
-
-            var validator = $("#newEvent").validate({
-                submitHandler: function() {
-                    vm.MemberCreatedId = $("#memberId").val();
-                    vm.Name = $("#name").val();
-                    vm.TotalAmount = $("#total").val();
-                    vm.Description = $("#description").val();
-                    $.ajax({
-                        url: "/api/Events",
-                        method: "POST",
-                        data: vm
-                    }).done(function() {
-                        toastr.success("Successfully created event");
-                        $("#name").val("");
-                        $("#memberJoined").typeahead("val", "");
-                        $("#membersJoined").empty();
-                        $("#total").val("");
-                        $("#description").val("");
-
-                        vm = { GuestIds: [] };
-                        validator.resetForm();
-
-                    }).fail(function() {
-                        toastr.fail("Something happend: Cannot created event! Please conntact Tung");
-                    });
-
-                    return false;
-                }
-            });
-        });
-    </script>
+<script>
+    function Submit() {
+        if (confirm("You already paid for this?")) {
+            return true;
+        } else {
+            return false;
+        }
+    }   
+</script>
 }
+/**/
+/**/

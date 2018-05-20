@@ -23,5 +23,7 @@ namespace RiverHouse.Models
         public int MemberId { get; set; }
 
         public bool IsPaid { get; set; }
+
+        public bool Pending { get; set; }
     }
 }

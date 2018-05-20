@@ -148,3 +148,5 @@ D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.AddEventIdToBil
 D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.FixMemberIdStoreInEvent.resources
 D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.AddNameOfPersonWhoPaidTheBill.resources
 D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.AddTotalRemainToEvent.resources
+D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.AddPendingToBill.resources
+D:\Project\RiverHouse\RiverHouse\obj\Debug\RiverHouse.Migrations.AddIsCompletedToEvent.resources

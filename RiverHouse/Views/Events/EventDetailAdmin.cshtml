@@ -1,0 +1,107 @@
+﻿@model RiverHouse.ViewModels.EventDetailViewModel
+
+@{
+    ViewBag.Title = "Event Detail";
+}
+<h2>@Model.Event.Name</h2>
+<h3>@(Model.Event.DateCreated?.ToShortDateString())</h3>
+<h4>@Model.Event.Description</h4>
+<h4>Total: $@Model.Event.TotalAmount</h4>
+<h4>Payfor: @Model.Member.Name</h4>
+<h4>Payment Remain: $@Model.Event.TotalRemain</h4>
+
+@if (@Model.Event.GuestCount > 0)
+ {
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Guest</th>
+            <th>Total</th>
+            <th>Payment</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var bill in @Model.Bills)
+        {
+            <tr>
+                <td>@bill.PaidBy</td>
+                <td>$@bill.Amount</td>
+                @if (bill.IsPaid)
+                {
+                    <td>Paid</td>
+                }
+                else if (bill.Pending)
+                {
+                    <td>
+                        @Html.ActionLink("Pending", "EditPaymentStatus", "Events",
+                            new { id = bill.Id },
+                            new { @onclick = "return Submit();" })
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.ActionLink("Waiting for payment", "EditPaymentStatus", "Events",
+                            new { id = bill.Id },
+                            new { @onclick = "return Submit();" })
+                    </td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+ }
+
+<button id="complete" class="btn btn-primary" data-event-id="@Model.Event.Id">Complete This Event/Payment</button>
+<button id="delete" class="btn btn-danger" data-event-id="@Model.Event.Id">Delete This Event/Payment</button>
+@section scripts{
+    <script>
+        function Submit() {
+            if (confirm("This payment is already completed?")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        $(document).ready(function () {
+            $("#complete").on("click",
+                function() {
+                    var button = $(this);
+
+                    bootbox.confirm("Are you sure this event/payment is completed?",
+                        function (result) {
+                            if (result) {
+                                $.ajax({
+                                    url: "/api/events/" + button.attr("data-event-id"),
+                                    method: "PUT",
+                                    success: function () {
+                                        toastr.success("Successfully complete event/payment");
+                                        window.location.href = "/events/detail/" + button.attr("data-event-id");
+                                    }
+                                });
+                            }
+                        });
+                });
+
+            $("#delete").on("click",
+                function () {
+                    var button = $(this);
+
+                    bootbox.confirm("Are you sure you want to delete this event/payment?",
+                        function (result) {
+                            if (result) {
+                                $.ajax({
+                                    url: "/api/events/" + button.attr("data-event-id"),
+                                    method: "DELETE",
+                                    success: function () {
+                                        toastr.success("Successfully delete event/payment");
+                                        window.location.href = "/members/details";
+                                    }
+                                });
+                            }
+                        });
+                });
+        });
+    </script>
+}

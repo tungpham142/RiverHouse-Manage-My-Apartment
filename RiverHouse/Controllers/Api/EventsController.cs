@@ -42,9 +42,13 @@ namespace RiverHouse.Controllers.Api
         public IHttpActionResult CreateNewEvents(NewEventDto newEvent)
         {
             var memberCreated = _context.Members.Single(m => m.Id == newEvent.MemberCreatedId);
-            var guests = _context.Members.Where(s => newEvent.GuestIds.Contains(s.Id)).ToList();
-            var guestCount = newEvent.GuestIds.Count();
-
+            var guests = new List<Member>();
+            var guestCount = 0;
+            if (newEvent.GuestIds != null)
+            {
+                guests = _context.Members.Where(s => newEvent.GuestIds.Contains(s.Id)).ToList();
+                guestCount = newEvent.GuestIds.Count();
+            }
             var addedEvent = new Event
             {
                 Name = newEvent.Name,
@@ -82,9 +86,20 @@ namespace RiverHouse.Controllers.Api
         }
 
         [HttpPut]
-        public IHttpActionResult EditEvent(int id)
+        public IHttpActionResult CompleteEvent(int id)
         {
+            var eEvent = _context.Events.SingleOrDefault(e => e.Id == id);
+            if (eEvent == null)
+                return NotFound();
+            var bills = _context.Bills.Where(b => b.EventId == id);
+            foreach (var bill in bills)
+            {
+                bill.IsPaid = true;
+            }
 
+            eEvent.IsCompleted = true;
+            eEvent.TotalRemain = 0.0;
+            _context.SaveChanges();
             return Ok();
         }
 

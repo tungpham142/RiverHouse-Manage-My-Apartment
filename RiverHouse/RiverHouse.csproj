@@ -304,6 +304,14 @@
     <Compile Include="Migrations\201805150452000_AddTotalRemainToEvent.Designer.cs">
       <DependentUpon>201805150452000_AddTotalRemainToEvent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805202046560_AddPendingToBill.cs" />
+    <Compile Include="Migrations\201805202046560_AddPendingToBill.Designer.cs">
+      <DependentUpon>201805202046560_AddPendingToBill.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805202222397_AddIsCompletedToEvent.cs" />
+    <Compile Include="Migrations\201805202222397_AddIsCompletedToEvent.Designer.cs">
+      <DependentUpon>201805202222397_AddIsCompletedToEvent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bill.cs" />
@@ -634,6 +642,7 @@
     <Content Include="Views\Members\MemberForm.cshtml" />
     <Content Include="Views\Events\EventForm.cshtml" />
     <Content Include="Views\Events\EventDetail.cshtml" />
+    <Content Include="Views\Events\EventDetailAdmin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -714,6 +723,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805150452000_AddTotalRemainToEvent.resx">
       <DependentUpon>201805150452000_AddTotalRemainToEvent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805202046560_AddPendingToBill.resx">
+      <DependentUpon>201805202046560_AddPendingToBill.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805202222397_AddIsCompletedToEvent.resx">
+      <DependentUpon>201805202222397_AddIsCompletedToEvent.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
